@@ -102,13 +102,19 @@ const PickerItem = ({
     easing: Easing.bezier(0.35, 1, 0.35, 1),
   };
 
+  
   const wrapper = (index: number) => {
-    onSelected && onSelected(pickerData[index], index);
-  };
+    setTimeout(() => {
+      onSelected && onSelected(pickerData[index], index);
+    }, 800);
+  }
+
 
   const onGestureEvent =
     useAnimatedGestureHandler<PanGestureHandlerGestureEvent>({
+
       // @ts-ignore
+
       onStart: (_event, ctx) => {
         // @ts-ignore
         ctx.y = translateY.value;
@@ -124,18 +130,20 @@ const PickerItem = ({
       onEnd: ({ velocityY }) => {
         const snapPointY = snapPoint(translateY.value, velocityY, snapPoints);
         const index =Math.abs(Math.round(snapPointY / itemHeight));
-        translateY.value = withTiming(snapPointY, timingConfig);
         runOnJS(wrapper)(index);
+        translateY.value = withTiming(snapPointY, timingConfig);
+
         // triggered at the end of the pan gesture
       },
+    
       // @ts-ignore
-      onFinish({velocityY}, isCanceledOrFailed) {
-        if(isCanceledOrFailed){
-          const snapPointY = snapPoint(translateY.value, velocityY, snapPoints);
-          const index = Math.abs(Math.round(snapPointY / itemHeight));
-          translateY.value = withTiming(snapPointY, timingConfig);
-          runOnJS(wrapper)(index);
-        }
+      onCancel({velocityY}, context) {
+        const snapPointY = snapPoint(translateY.value, velocityY, snapPoints);
+        const index = Math.abs(Math.round(snapPointY / itemHeight));
+        runOnJS(wrapper)(index);
+        translateY.value = withTiming(snapPointY, timingConfig);
+
+        
       },
        // triggred when gesture is outside of the pan gesture  
     });
@@ -200,8 +208,8 @@ const PickerItem = ({
           </>
         )}
       </MaskedView>
-      <GestureHandlerRootView style={StyleSheet.absoluteFillObject}>
-        <PanGestureHandler onGestureEvent={onGestureEvent}>
+      <GestureHandlerRootView style={StyleSheet.absoluteFillObject} onStartShouldSetResponder={()=> true}>
+        <PanGestureHandler onGestureEvent={onGestureEvent} shouldCancelWhenOutside={false} >
           <Animated.View
             // eslint-disable-next-line react-native/no-inline-styles
             style={{
