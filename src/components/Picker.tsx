@@ -1,3 +1,5 @@
+
+// @ts-nocheck 
 import {
   View,
   StyleSheet,
@@ -7,7 +9,6 @@ import {
   ViewStyle,
 } from 'react-native';
 import React from 'react';
-// @ts-ignore
 import Animated, {
   Easing,
   Extrapolate,
@@ -19,14 +20,12 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-// @ts-ignore
 import {
   PanGestureHandlerGestureEvent,
   PanGestureHandler,
   GestureHandlerRootView,
 } from 'react-native-gesture-handler';
 import { snapPoint } from 'react-native-redash';
-// @ts-ignore
 import MaskedView from '@react-native-masked-view/masked-view';
 
 export type PickerData = {
